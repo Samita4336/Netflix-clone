@@ -1,8 +1,12 @@
-import Input from '@/components/input'
-import React, { useCallback, useState } from 'react'
 import axios from 'axios'
+import Input from '@/components/input'
+import { useCallback, useState } from 'react'
+import { signIn } from 'next-auth/react'
+import { FcGoogle } from 'react-icons/fc'
+import { FaGithub } from 'react-icons/fa'
 
 const Auth = () => {
+
   const [email, setEmail] = useState('')
     const [name, setName] = useState('')
     const [password, setPassword] = useState('');
@@ -13,18 +17,32 @@ const Auth = () => {
             setVariant((currentVariant) => currentVariant === 'login' ? "register" : "login");
      }, [])
   
+     const Login = useCallback(async () => {
+       try {
+         await signIn('credentials', {
+           email,
+           password,
+           callbackUrl: "/profile",
+         })
+       } catch (error) {
+         console.log(error)
+       }       
+     }, [email, password])
   const register = useCallback( async () => {
     try {
-      await axios.post('/api/register', {
+      await axios.post(`/api/register`, {
         email,
         name,
         password,
-      })
+      });
+
+      Login()
     
   } catch (error) {
     console.log(error)
   }
-  },[email,name,password])
+  }, [email, name, password, Login])
+  
 
   return (
       <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-fixed bg-cover">
@@ -62,9 +80,46 @@ const Auth = () => {
                           />
                           
                       </div>
-                      <button onClick={register} className='bg-red-600 py-3 text-white rounded-md w-full'>
+                      <button onClick={variant === 'login' ? Login : register} className='bg-red-600 py-3 mt-10 text-white rounded-md w-full'>
                         {variant === 'login' ? 'Login' : 'Sign Up'}
-                      </button>
+            </button>
+            <div className='flex flex-row gap-4 mt-8 justify-center'>
+              <div
+              onClick={() => signIn('google', {callbackUrl: '/profile'})}
+                className='
+              flex
+              w-10
+              h-10
+              rounded-full
+              bg-white
+              hover:opacity-80
+              justify-center
+              items-center
+              transition
+              cursor-pointer
+              '>
+                <FcGoogle size={30} />
+
+              </div>
+              <div
+               onClick={() => signIn('github', { callbackUrl: '/profile' })}
+                className='
+              flex
+              w-10
+              h-10
+              rounded-full
+              bg-white
+              hover:opacity-80
+              justify-center
+              items-center
+              transition
+              cursor-pointer
+              '>
+                <FaGithub size={30} />
+
+              </div>
+
+            </div>
                       <p className=' text-neutral-500 mt-12'>
                           {variant === 'login' ? "First time using Netflix?" : "Already have an account?"}
                           <span onClick={toggleVariant} className='text-white ml-1 hover:underline cursor-pointer'>

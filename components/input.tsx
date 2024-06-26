@@ -33,7 +33,7 @@ const Input: React.FC<InputsProps> = ({
       text-md
       text-white
       bg-neutral-700
-      apperance-none
+      appearance-none
       focus:outline-none
       focus:ring-0
       peer
@@ -41,7 +41,7 @@ const Input: React.FC<InputsProps> = ({
         placeholder=''
       />
       <label className='
-      absoulte
+     absolute
       text-md
       text-zinc-400
       duration-150
@@ -55,7 +55,7 @@ const Input: React.FC<InputsProps> = ({
       peer-placeholder-shown:scale-100
       peer-placeholder-shown:translate-y-0
       peer-focus:scale-75
-      peer-focus:translate-y-3
+      peer-focus:-translate-y-3
       ' htmlFor={id}>{label}</label>
     </div>
   )
